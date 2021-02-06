@@ -8,10 +8,13 @@
 import RPi.GPIO as GPIO
 import time
 from ADCDevice import *
+import sys
 
 adc = ADCDevice() # Define an ADCDevice class object
 
-MORSE_UNIT = 0.02
+MORSE_UNIT = 0.05
+if len(sys.argv) > 1:
+    MORSE_UNIT = float(sys.argv[1])
 SLEEP_TIME = 0.001
 
 MORSE_TABLE = {   '-': 'T',
@@ -88,7 +91,8 @@ def loop():
     start = time.time()
     while True:
         value = adc.analogRead(0)    # read the ADC value of channel 0
-        #print("value : ",value,", time :",time.time()-start)
+        if len(sys.argv) > 2:
+            print("value : ",value,", time :",time.time()-start)
         if value < 45:
             led_on = 1
         elif value >= 45:

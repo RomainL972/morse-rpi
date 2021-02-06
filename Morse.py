@@ -26,7 +26,11 @@ MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     '?':'..--..', '/':'-..-.', '-':'-....-', 
                     '(':'-.--.', ')':'-.--.-'}
 
-MORSE_UNIT = 0.02
+import sys
+
+MORSE_UNIT = 0.05
+if len(sys.argv) > 1:
+    MORSE_UNIT = float(sys.argv[1])
 
 def setup():
     GPIO.setmode(GPIO.BOARD)       # use PHYSICAL GPIO Numbering
@@ -66,12 +70,6 @@ def loop():
     while True:
         string = input("String : ")
         convert(string)
-        #GPIO.output(ledPin, GPIO.HIGH)  # make ledPin output HIGH level to turn on led
-        #print ('led turned on >>>')     # print information on terminal
-        #time.sleep(0.2)                   # Wait for 1 second
-        #GPIO.output(ledPin, GPIO.LOW)   # make ledPin output LOW level to turn off led
-        #print ('led turned off <<<')
-        #time.sleep(2)                   # Wait for 1 second
 
 def destroy():
     GPIO.cleanup()                      # Release all GPIO
