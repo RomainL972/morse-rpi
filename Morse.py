@@ -41,7 +41,7 @@ def set_led(mode, sleep_time):
 def letter(letter):
     code = MORSE_CODE_DICT.get(letter.upper())
     if not code:
-        return
+        return False
     for part in code:
         if part == ".":
             time = 1
@@ -49,11 +49,12 @@ def letter(letter):
             time = 3
         set_led(GPIO.HIGH, time*MORSE_UNIT)
         set_led(GPIO.LOW, MORSE_UNIT)
+    return True
 
 def word(word):
     for l in word:
-        letter(l)
-        sleep(2*MORSE_UNIT)
+        if letter(l):
+            sleep(2*MORSE_UNIT)
 
 def convert(string):
     for w in string.split(" "):

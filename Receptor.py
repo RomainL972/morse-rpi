@@ -115,20 +115,20 @@ def loop():
                 mprint("\n")
             else:
                 #print("Checking state")
-                if units <= 1 and not old_led_on:
+                if units == 1 and not old_led_on:
                     #print("small pause")
                     pass
-                elif (units == 2 or units == 3 or units == 4) and not old_led_on:
+                elif units == 3 and not old_led_on:
                     mprint(decode(letter))
                     letter = ""
                 elif units == 7 and not old_led_on:
                     mprint(decode(letter))
                     mprint(" ")
                     letter = ""
-                elif units <= 2 and old_led_on:
+                elif units == 1 and old_led_on:
                     letter += "."
                     #mprint(".")
-                elif (units == 3 or units == 4) and old_led_on:
+                elif units == 3 and old_led_on:
                     letter += "-"
                     #mprint("-")
 
