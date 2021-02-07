@@ -9,14 +9,15 @@ import RPi.GPIO as GPIO
 import time
 from ADCDevice import *
 import sys
-from binary import Binary as Morse
+from binary import Binary
+from morse import Morse
 # from debug import Debug as Morse
 
 adc = ADCDevice() # Define an ADCDevice class object
 
-MORSE_UNIT = 0.05
+TIME_UNIT = 0.05
 if len(sys.argv) > 1:
-    MORSE_UNIT = float(sys.argv[1])
+    TIME_UNIT = float(sys.argv[1])
 
 def setup():
     global adc
@@ -29,23 +30,29 @@ def setup():
         "Please use command 'i2cdetect -y 1' to check the I2C address! \n"
         "Program Exit. \n");
         exit(-1)
-    return Morse(MORSE_UNIT)
+    if len(sys.argv) < 3 or sys.argv[2] == "binary":
+        backend = Binary(TIME_UNIT)
+    elif len(sys.argv) >= 3 and sys.argv[2] == "morse":
+        backend = Morse(TIME_UNIT)
+    else:
+        print("Please choose [binary] or morse for backend")
+    return backend
 
 def mprint(message):
     print(message, end='', flush=True)
 
-def loop(morse):
+def loop(backend):
     while True:
         value = adc.analogRead(0)    # read the ADC value of channel 0
-        if len(sys.argv) > 2:
-            print("value : ",value,", time :",time.time()-start)
+        # if len(sys.argv) > 2:
+        #     print("value : ",value,", time :",time.time()-start)
 
         if value < 30:
             led_on = True
         elif value >= 30:
             led_on = False
 
-        char = morse.parse_signal(led_on)
+        char = backend.parse_signal(led_on)
         if char:
             mprint(char)
 
@@ -55,8 +62,8 @@ def destroy():
 
 if __name__ == '__main__':   # Program entrance
     print ('Program is starting ... ')
-    morse = setup()
+    backend = setup()
     try:
-        loop(morse)
+        loop(backend)
     finally:  # Press ctrl-c to end the program.
         destroy()

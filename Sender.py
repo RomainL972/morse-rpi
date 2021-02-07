@@ -7,37 +7,50 @@
 ########################################################################
 import RPi.GPIO as GPIO
 from time import sleep, time
-from binary import Binary as Morse
+from binary import Binary
+from morse import Morse
 
 ledPin = 11    # define ledPin
+begin_time = time()
+i = 0
 
 import sys
 
-MORSE_UNIT = 0.05
+TIME_UNIT = 0.05
 if len(sys.argv) > 1:
-    MORSE_UNIT = float(sys.argv[1])
+    TIME_UNIT = float(sys.argv[1])
 
 def setup():
     GPIO.setmode(GPIO.BOARD)       # use PHYSICAL GPIO Numbering
     GPIO.setup(ledPin, GPIO.OUT)   # set the ledPin to OUTPUT mode
     GPIO.output(ledPin, GPIO.LOW)  # make ledPin output LOW level
     print ('using pin%d'%ledPin)
-    morse_manager = Morse(MORSE_UNIT)
-    return morse_manager
+    if len(sys.argv) < 3 or sys.argv[2] == "binary":
+        backend = Binary(TIME_UNIT)
+    elif len(sys.argv) >= 3 and sys.argv[2] == "morse":
+        backend = Morse(TIME_UNIT)
+    else:
+        print("Please choose [binary] or morse for backend")
+    return backend
 
 def set_led(mode, sleep_time):
+    global i
     start_time = time()
     GPIO.output(ledPin, mode)
+    # print(i,": Set ","0" if mode else "1","at",time()-begin_time)
+    i += 1
     while start_time+sleep_time>time():
         pass
 
 
-def loop(morse_manager):
+def loop(backend):
+    global begin_time
     while True:
         string = input("String : ") + "\n"
-        code = morse_manager.encode(string)
+        code = backend.encode(string)
         print("Number of parts :",len(code))
         total_time = 0
+        begin_time = time()
         for e in code:
             if e["state"]:
                 state = GPIO.HIGH
@@ -52,8 +65,8 @@ def destroy():
 
 if __name__ == '__main__':    # Program entrance
     print ('Program is starting ... \n')
-    morse_manager = setup()
+    backend = setup()
     try:
-        loop(morse_manager)
+        loop(backend)
     finally:   # Press ctrl-c to end the program.
         destroy()
