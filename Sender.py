@@ -6,8 +6,8 @@
 # modification: 2019/12/28
 ########################################################################
 import RPi.GPIO as GPIO
-from time import sleep
-from morse import Morse
+from time import sleep, time
+from binary import Binary as Morse
 
 ledPin = 11    # define ledPin
 
@@ -26,13 +26,15 @@ def setup():
     return morse_manager
 
 def set_led(mode, sleep_time):
+    start_time = time()
     GPIO.output(ledPin, mode)
-    sleep(sleep_time)
+    while start_time+sleep_time>time():
+        pass
 
 
 def loop(morse_manager):
     while True:
-        string = input("String : ")
+        string = input("String : ") + "\n"
         code = morse_manager.encode(string)
         print("Number of parts :",len(code))
         total_time = 0
@@ -53,5 +55,5 @@ if __name__ == '__main__':    # Program entrance
     morse_manager = setup()
     try:
         loop(morse_manager)
-    except KeyboardInterrupt:   # Press ctrl-c to end the program.
+    finally:   # Press ctrl-c to end the program.
         destroy()

@@ -9,7 +9,8 @@ import RPi.GPIO as GPIO
 import time
 from ADCDevice import *
 import sys
-from morse import Morse
+from binary import Binary as Morse
+# from debug import Debug as Morse
 
 adc = ADCDevice() # Define an ADCDevice class object
 
@@ -57,5 +58,5 @@ if __name__ == '__main__':   # Program entrance
     morse = setup()
     try:
         loop(morse)
-    except KeyboardInterrupt:  # Press ctrl-c to end the program.
+    finally:  # Press ctrl-c to end the program.
         destroy()
