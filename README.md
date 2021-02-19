@@ -11,7 +11,8 @@ Binary Packet structure :
 0 = led on
 1 = led off
 
-Position    | Length                | Description
-0           | 1                     | Start signal (led on)
-1           | 8                     | Length of data
-17          | Length                | Data
+| Position    | Length                | Description           |
+| :---------- | :-------------------: | --------------------: |
+| 0           | 1                     | Start signal (led on) |
+| 1           | 7                     | Length of data        |
+| 17          | Length                | Data                  |
