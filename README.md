@@ -7,8 +7,8 @@ Standards implemented:
 - RS-232
 - UTF-8
 
-Binary Packet structure :
-0 = led on
+Binary Packet structure :  
+0 = led on  
 1 = led off
 
 | Position    | Length                | Description           |
