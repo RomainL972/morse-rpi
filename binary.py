@@ -45,6 +45,8 @@ class Binary():
 
         result = []
         for chunk in chunks:
+            if len(chunk) > MAX_PACKET_DATA_SIZE:
+                raise Exception("WTF???")
             # Start signal
             result.append({"state": True, "time": self.unit_time})
             # Length header

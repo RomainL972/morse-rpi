@@ -11,7 +11,7 @@ from ADCDevice import *
 import sys
 from binary import Binary
 from morse import Morse
-# from debug import Debug as Morse
+from debug import Debug
 
 adc = ADCDevice() # Define an ADCDevice class object
 
@@ -34,6 +34,8 @@ def setup():
         backend = Binary(TIME_UNIT)
     elif len(sys.argv) >= 3 and sys.argv[2] == "morse":
         backend = Morse(TIME_UNIT)
+    elif len(sys.argv) >= 3 and sys.argv[2] == "debug":
+        backend = Debug(TIME_UNIT)
     else:
         print("Please choose [binary] or morse for backend")
     return backend
@@ -47,12 +49,16 @@ def loop(backend):
         # if len(sys.argv) > 2:
         #     print("value : ",value,", time :",time.time()-start)
 
-        if value < 30:
+        if value <= 1:
             led_on = True
-        elif value >= 30:
+        elif value > 1:
             led_on = False
 
-        char = backend.parse_signal(led_on)
+        if isinstance(backend, Debug):
+            char = backend.parse_signal(value)
+        else:
+            char = backend.parse_signal(led_on)
+
         if char:
             mprint(char)
 
@@ -67,3 +73,6 @@ if __name__ == '__main__':   # Program entrance
         loop(backend)
     finally:  # Press ctrl-c to end the program.
         destroy()
+        # For debug
+        if isinstance(backend, Debug):
+            backend.write_results() 
