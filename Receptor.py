@@ -75,4 +75,4 @@ if __name__ == '__main__':   # Program entrance
         destroy()
         # For debug
         if isinstance(backend, Debug):
-            backend.write_results() 
+            backend.write_results()

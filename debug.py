@@ -15,7 +15,6 @@ class Debug():
 
     def parse_signal(self, state):
         current_time = time.time()
-        units = (current_time - self.last_time) / self.unit_time
 
         if not self.started and state > 80:
             return
@@ -23,8 +22,8 @@ class Debug():
         if not self.started:
             self.started = True
             self.last_time = time.time()
-        #print("State :", "0" if state else "1","at",time.time()-self.last_time)
-        #time.sleep(0.01)
+
+        units = (current_time - self.last_time) / self.unit_time
         self.results.append({"state":state,"time:":units})
 
         # if state != self.last_state:
