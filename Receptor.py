@@ -9,8 +9,6 @@ import RPi.GPIO as GPIO
 import time
 from ADCDevice import *
 import sys
-from binary import Binary
-from morse import Morse
 from debug import Debug
 
 adc = ADCDevice() # Define an ADCDevice class object
@@ -30,15 +28,11 @@ def setup():
         "Please use command 'i2cdetect -y 1' to check the I2C address! \n"
         "Program Exit. \n");
         exit(-1)
-    if len(sys.argv) < 3 or sys.argv[2] == "binary":
-        backend = Binary(TIME_UNIT)
-    elif len(sys.argv) >= 3 and sys.argv[2] == "morse":
-        backend = Morse(TIME_UNIT)
-    elif len(sys.argv) >= 3 and sys.argv[2] == "debug":
-        backend = Debug(TIME_UNIT)
-    else:
-        print("Please choose [binary] or morse for backend")
-    return backend
+    
+    backend_name = "binary"
+    if len(sys.argv) >=3:
+        backend_name = sys.argv[2]
+    return backends.getBackend(backend_name)(TIME_UNIT)
 
 def mprint(message):
     print(message, end='', flush=True)
