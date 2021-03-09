@@ -62,6 +62,7 @@ def loop(backend):
             total_time += e["time"]
             set_led(state, e["time"])
         print("Total time :",round(total_time, 2),"s")
+        sleep(0.1)
 
 def destroy():
     GPIO.cleanup()                      # Release all GPIO
