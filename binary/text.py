@@ -6,6 +6,7 @@ class BinaryText():
         self.bits = ""
         self.byte_size = 0
         self.unit_time = unit_time
+        self.name = "binary-text"
 
     def encode(self, string):
         chunks = []
@@ -21,30 +22,11 @@ class BinaryText():
             chunk += binary
         chunks.append(chunk)
 
-        result = []
-        for chunk in chunks:
-            if len(chunk) > MAX_PACKET_DATA_SIZE:
-                raise Exception("WTF???")
-            # Start signal
-            result.append({"state": True, "time": self.unit_time})
-            # Length header
-            chunk = bin(len(chunk))[2:].zfill(LENGTH_HEADER_SIZE) + chunk
-            # print("Chunk :",chunk)
-
-            for bit in chunk:
-                result.append({
-                    "state": True if (bit == "0") else False,
-                    "time": self.unit_time
-                })
-
-        # Shutdown LED at the end
-        result.append({"state": False, "time": 0})
-
-        return result
+        return self.common.chunks_to_signal(chunks)
 
     def decode(self):
         # print("Decoding :",self.bits)
-        return int(self.bits, 2).to_bytes(len(self.bits)//8, "big").decode()
+        return self.common.bin_to_bytes(self.bits).decode()
 
     def parse_signal(self, led_state):
         bit = self.common.parse_signal(led_state)

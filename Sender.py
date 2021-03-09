@@ -36,7 +36,10 @@ def set_led(mode, sleep_time):
 
 def loop(backend):
     while True:
-        string = input("String : ") + "\n"
+        if backend.name == "binary-file":
+            string = input("Filename : ")
+        else:
+            string = input("String : ") + "\n"
         code = backend.encode(string)
         print("Number of parts :",len(code))
         total_time = 0

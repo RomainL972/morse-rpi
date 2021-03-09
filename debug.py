@@ -13,6 +13,8 @@ class Debug():
         self.started = False
         self.results = []
 
+        self.name = "debug"
+
     def parse_signal(self, state):
         current_time = time.time()
 

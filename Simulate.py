@@ -13,7 +13,7 @@ def setup():
     backend_name = "binary-text"
     if len(sys.argv) > 2:
         backend_name = sys.argv[2]
-    if backend_name == "binary-text":
+    if backend_name == "binary-text" or backend_name == "binary-file":
         return backends.getBackend(backend_name)(TIME_UNIT, debug=True)
     else:
         return backends.getBackend(backend_name)(TIME_UNIT)

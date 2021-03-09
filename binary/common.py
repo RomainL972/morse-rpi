@@ -23,6 +23,31 @@ class BinaryCommon():
         self.first = True
         self.average = {"sum":0,"n":0}
 
+    def chunks_to_signal(self, chunks):
+        result = []
+        for chunk in chunks:
+            if len(chunk) > MAX_PACKET_DATA_SIZE:
+                raise Exception("WTF???")
+            # Start signal
+            result.append({"state": True, "time": self.unit_time})
+            # Length header
+            chunk = bin(len(chunk))[2:].zfill(LENGTH_HEADER_SIZE) + chunk
+            # print("Chunk :",chunk)
+
+            for bit in chunk:
+                result.append({
+                    "state": True if (bit == "0") else False,
+                    "time": self.unit_time
+                })
+
+        # Shutdown LED at the end
+        result.append({"state": False, "time": 0})
+
+        return result
+
+    def bin_to_bytes(self, bin):
+        return int(bin, 2).to_bytes(len(bin)//8, "big")
+
     def parse_signal(self, led_state):
         current_time = time.time()
         units = (current_time - self.last_time) / self.unit_time

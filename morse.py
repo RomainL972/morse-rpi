@@ -70,6 +70,8 @@ class Morse():
         self.last_state = False
         self.letter = ""
 
+        self.name = "morse"
+
     def encode(self, string):
         result = []
         for word in string.split(" "):

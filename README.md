@@ -16,3 +16,9 @@ Binary Packet structure :
 | 0           | 1                     | Start signal (led on) |
 | 1           | 7                     | Length of data        |
 | 17          | Length                | Data                  |
+
+File structure :
+
+- Length of file (24 bit)
+- File name zero-terminated
+- File data
