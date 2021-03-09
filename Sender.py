@@ -43,11 +43,14 @@ def set_led(mode, sleep_time):
         pass
 
 
+import json
 def loop(backend):
     global begin_time
     while True:
         string = input("String : ") + "\n"
         code = backend.encode(string)
+        with open("code.txt", "w") as f:
+            f.write(json.dumps(code))
         print("Number of parts :",len(code))
         total_time = 0
         begin_time = time()
