@@ -10,8 +10,9 @@ class State(Enum):
     STARTED = 2
 
 class Binary():
-    def __init__(self, unit_time):
+    def __init__(self, unit_time, debug=False):
         self.unit_time = unit_time
+        self.debug = debug
 
         # For signal parsing
         self.state = State.IDLE
@@ -76,33 +77,27 @@ class Binary():
         if self.state == State.IDLE and units > 2:
             self.first = True
 
-        if self.state == State.IDLE and (not led_state or units <1):
+        if self.state == State.IDLE and (not led_state or units <1) and not self.debug:
             return
 
         if units > 0 and units < 1:
             self.average["sum"] += led_state
             self.average["n"] += 1
-        if units >= 1:
-            if self.average["n"] > 0:
+        if units >= 1 or self.debug:
+            if self.average["n"] > 0 and not self.debug:
                 average = self.average["sum"] / self.average["n"]
                 self.average["sum"] = self.average["n"] = 0
                 if not self.first:
                     led_state = average == 1
 
-            #print(led_state,end=' ',flush=True)
-
-            # print(self.i,": State :",self.state,", bit ","0" if led_state else "1","at",time.time()-self.begin_time)
             self.i += 1
             if self.state == State.IDLE and led_state:
                 self.state = State.STARTING
                 if self.first:
-                    #self.last_time = current_time + 0.5 * self.unit_time
                     self.last_time = current_time + self.unit_time
                     self.first = False
                 else:
                     self.last_time = current_time
-                if not self.begin_time:
-                    self.begin_time = time.time()
                 return
 
             # print("State :", "0" if led_state else "1","at",time.time()-self.begin_time)

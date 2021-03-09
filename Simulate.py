@@ -10,7 +10,10 @@ if len(sys.argv) > 1:
     TIME_UNIT = float(sys.argv[1])
 
 def setup():
-    return backends.getBackend("binary")(TIME_UNIT)
+    backend_name = "binary"
+    if len(sys.argv) > 2:
+        backend_name = sys.argv[2]
+    return backends.getBackend(backend_name)(TIME_UNIT, debug=True)
 
 def mprint(message):
     print(message, end='', flush=True)
@@ -25,12 +28,9 @@ def loop(backend):
     time.sleep(TIME_UNIT*10)
 
     for i in code:
-        start_time = time.time()
         char = backend.parse_signal(i["state"])
         if char:
             mprint(char)
-        while start_time+i["time"]>time.time():
-            pass
 
 if __name__ == '__main__':   # Program entrance
     print ('Program is starting ... ')
