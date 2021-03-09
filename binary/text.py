@@ -63,16 +63,5 @@ class BinaryText():
                 return_val = self.decode()
                 self.bits = ""
                 self.byte_size = 0
-                if self.byte_size <= 0:
-                    if bit == "1":
-                        self.byte_size -= 1
-                    else:
-                        self.byte_size *= -8
-                        if self.byte_size == 0:
-                            self.byte_size += 8
-                elif len(self.bits) == self.byte_size:
-                    return_val = self.decode()
-                    self.bits = ""
-                    self.byte_size = 0
 
         return return_val
