@@ -43,10 +43,12 @@ class BinaryFile():
         self.file_name = self.common.bin_to_bytes(self.bits[:-8]).decode()
 
     def decode_file_data(self):
-        os.mkdir("uploads")
-        print("Writing result to uploads/" + self.file_name)
+        if not os.path.isdir("uploads"):
+            os.mkdir("uploads")
+        print("\nWriting result to uploads/" + self.file_name)
         with open("uploads/" + self.file_name, "wb") as f:
             f.write(self.common.bin_to_bytes(self.bits))
+        exit()
 
     def parse_signal(self, led_state):
         bit = self.common.parse_signal(led_state)
@@ -67,3 +69,5 @@ class BinaryFile():
                 self.bits = ""
                 self.file_size = 0
                 self.file_name = ""
+            else:
+                print("\rProgress : ",round(len(self.bits)/self.file_size*100,2),"%",end="")
