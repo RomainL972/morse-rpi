@@ -1,7 +1,7 @@
 import time
 from enum import Enum
 
-LENGTH_HEADER_SIZE = 7
+LENGTH_HEADER_SIZE = 17
 MAX_PACKET_DATA_SIZE = 2**(LENGTH_HEADER_SIZE-1)
 
 class State(Enum):
