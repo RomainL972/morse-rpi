@@ -9,7 +9,7 @@ class State(Enum):
     STARTING = 1
     STARTED = 2
 
-class Binary():
+class BinaryCommon():
     def __init__(self, unit_time, debug=False):
         self.unit_time = unit_time
         self.debug = debug
@@ -19,56 +19,9 @@ class Binary():
         self.last_time = time.time()
         self.bits = ""
         self.bits_left = 0
-        self.byte_size = 0
-
-        self.begin_time = 0
-        self.i = 0
 
         self.first = True
         self.average = {"sum":0,"n":0}
-
-    def encode(self, string):
-        chunks = []
-        chunk = ""
-        for char in string:
-            binary = ""
-            for byte in char.encode():
-                binary += bin(byte)[2:].zfill(8)
-
-            if len(chunk) + len(binary) > MAX_PACKET_DATA_SIZE:
-                chunks.append(chunk)
-                chunk = ""
-            chunk += binary
-        chunks.append(chunk)
-        # print("result :",bits)
-
-        # chunk_size = MAX_PACKET_DATA_SIZE
-        # chunks = ["".join(bits[i:i+chunk_size]) for i in range(0, len(bits), chunk_size)]
-
-        result = []
-        for chunk in chunks:
-            if len(chunk) > MAX_PACKET_DATA_SIZE:
-                raise Exception("WTF???")
-            # Start signal
-            result.append({"state": True, "time": self.unit_time})
-            # Length header
-            chunk = bin(len(chunk))[2:].zfill(LENGTH_HEADER_SIZE) + chunk
-            # print("Chunk :",chunk)
-
-            for bit in chunk:
-                result.append({
-                    "state": True if (bit == "0") else False,
-                    "time": self.unit_time
-                })
-
-        # Shutdown LED at the end
-        result.append({"state": False, "time": 0})
-
-        return result
-
-    def decode(self):
-        # print("Decoding :",self.bits)
-        return int(self.bits, 2).to_bytes(len(self.bits)//8, "big").decode()
 
     def parse_signal(self, led_state):
         current_time = time.time()
@@ -90,7 +43,6 @@ class Binary():
                 if not self.first:
                     led_state = average == 1
 
-            self.i += 1
             if self.state == State.IDLE and led_state:
                 self.state = State.STARTING
                 if self.first:
@@ -102,7 +54,7 @@ class Binary():
 
             # print("State :", "0" if led_state else "1","at",time.time()-self.begin_time)
             bit = "0" if led_state else "1"
-            return_val = ""
+            return_val = None
 
             if self.state == State.STARTING:
                 self.bits += bit
@@ -113,19 +65,7 @@ class Binary():
                     # print("Packet size :",self.bits_left)
 
             elif self.state == State.STARTED:
-                self.bits += bit
-                if self.byte_size <= 0:
-                    if bit == "1":
-                        self.byte_size -= 1
-                    else:
-                        self.byte_size *= -8
-                        if self.byte_size == 0:
-                            self.byte_size += 8
-                elif len(self.bits) == self.byte_size:
-                    return_val = self.decode()
-                    self.bits = ""
-                    self.byte_size = 0
-
+                return_val = bit
                 self.bits_left -= 1
                 if self.bits_left <= 0:
                     self.state = State.IDLE

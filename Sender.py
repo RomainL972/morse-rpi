@@ -10,8 +10,6 @@ from time import sleep, time
 import backends
 
 ledPin = 11    # define ledPin
-begin_time = time()
-i = 0
 
 import sys
 
@@ -24,33 +22,24 @@ def setup():
     GPIO.setup(ledPin, GPIO.OUT)   # set the ledPin to OUTPUT mode
     GPIO.output(ledPin, GPIO.LOW)  # make ledPin output LOW level
     print ('using pin%d'%ledPin)
-    
-    backend_name = "binary"
+
+    backend_name = "binary-text"
     if len(sys.argv) >=3:
         backend_name = sys.argv[2]
     return backends.getBackend(backend_name)(TIME_UNIT)
 
 def set_led(mode, sleep_time):
-    global i
     start_time = time()
     GPIO.output(ledPin, mode)
-    # print(i,": Set ","0" if mode else "1","at",time()-begin_time)
-    i += 1
     while start_time+sleep_time>time():
         pass
 
-
-import json
 def loop(backend):
-    global begin_time
     while True:
         string = input("String : ") + "\n"
         code = backend.encode(string)
-        with open("code.txt", "w") as f:
-            f.write(json.dumps(code))
         print("Number of parts :",len(code))
         total_time = 0
-        begin_time = time()
         for e in code:
             if e["state"]:
                 state = GPIO.HIGH

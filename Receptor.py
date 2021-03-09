@@ -30,7 +30,7 @@ def setup():
         "Program Exit. \n");
         exit(-1)
 
-    backend_name = "binary"
+    backend_name = "binary-text"
     if len(sys.argv) >=3:
         backend_name = sys.argv[2]
     return backends.getBackend(backend_name)(TIME_UNIT)
@@ -41,8 +41,6 @@ def mprint(message):
 def loop(backend):
     while True:
         value = adc.analogRead(0)    # read the ADC value of channel 0
-        # if len(sys.argv) > 2:
-        #     print("value : ",value,", time :",time.time()-start)
 
         if value <= 1:
             led_on = True
