@@ -7,8 +7,7 @@
 ########################################################################
 import RPi.GPIO as GPIO
 from time import sleep, time
-from binary import Binary
-from morse import Morse
+import backends
 
 ledPin = 11    # define ledPin
 begin_time = time()
@@ -25,13 +24,11 @@ def setup():
     GPIO.setup(ledPin, GPIO.OUT)   # set the ledPin to OUTPUT mode
     GPIO.output(ledPin, GPIO.LOW)  # make ledPin output LOW level
     print ('using pin%d'%ledPin)
-    if len(sys.argv) < 3 or sys.argv[2] == "binary":
-        backend = Binary(TIME_UNIT)
-    elif len(sys.argv) >= 3 and sys.argv[2] == "morse":
-        backend = Morse(TIME_UNIT)
-    else:
-        print("Please choose [binary] or morse for backend")
-    return backend
+    
+    backend_name = "binary"
+    if len(sys.argv) >=3:
+        backend_name = sys.argv[2]
+    return backends.getBackend(backend_name)(TIME_UNIT)
 
 def set_led(mode, sleep_time):
     global i
