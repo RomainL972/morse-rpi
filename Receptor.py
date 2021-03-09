@@ -10,6 +10,7 @@ import time
 from ADCDevice import *
 import sys
 from debug import Debug
+import backends
 
 adc = ADCDevice() # Define an ADCDevice class object
 
@@ -28,7 +29,7 @@ def setup():
         "Please use command 'i2cdetect -y 1' to check the I2C address! \n"
         "Program Exit. \n");
         exit(-1)
-    
+
     backend_name = "binary"
     if len(sys.argv) >=3:
         backend_name = sys.argv[2]
